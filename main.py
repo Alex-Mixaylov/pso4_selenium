@@ -11,7 +11,9 @@ url2 = 'https://ru.wikipedia.org/wiki/Selenium'
 
 browser = webdriver.Chrome()
 browser.get(url1)
+browser.save_screenshot("dom.png")
 time.sleep(10)
 browser.get(url2)
+browser.save_screenshot("selenium.png")
 time.sleep(10)
 browser.quit()
