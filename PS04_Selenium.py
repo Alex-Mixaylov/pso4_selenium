@@ -12,7 +12,7 @@ def init_browser():
 
 def search_wikipedia(browser, query):
     # Поиск статьи на Википедии
-    url_wiki = 'https://ru.wikipedia.org'
+    url_wiki = 'https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0'
     browser.get(url_wiki)
     assert "Википедия" in browser.title
     search_box = browser.find_element(By.ID, "searchInput")
@@ -20,14 +20,27 @@ def search_wikipedia(browser, query):
     search_box.send_keys(Keys.RETURN)
     time.sleep(2)
 
+    #Поиск на Википедии может иногда перенаправлять на страницу результатов поиска,
+    # вместо того чтобы сразу открывать нужную статью.
+    # Для решения этой проблемы можно сделать следующее:
+
+    # Проверка, есть ли в URL подстрока "search"
+    if "search" in browser.current_url:
+        # Клик на первой ссылке в результатах поиска
+        # Этот селектор в совокупности выбирает все ссылки внутри элементов <li>,
+        # которые находятся внутри списка <ul> с классом mw-search-results.
+        first_result = browser.find_element(By.CSS_SELECTOR, "ul.mw-search-results li a") #Селектор ul.mw-search-results li a
+        first_result.click()
+        time.sleep(2)
+
 
 def list_paragraphs(browser):
     # Листаем параграфы текущей статьи
     paragrafs = browser.find_elements(By.TAG_NAME, "p")
     for paragraf in paragrafs:
         print(paragraf.text)
-        user_input = input("Press Enter to continue or type 'exit' to stop: ")
-        if user_input.lower() == 'exit':
+        user_input = input("Нажмите ВВОД для продолжения или введите ВЫХОД для выхода из режима просмотра параграфов ")
+        if user_input.lower() == 'выход':
             break
 
 
@@ -68,8 +81,8 @@ def main():
                     print("Связанных страниц не найдено.")
                     continue
 
-                link_choice = input("Введите номер связанной страницы для перехода или 'back' для возврата: ")
-                if link_choice.lower() == 'back':
+                link_choice = input("Введите номер связанной страницы для перехода или 'НАЗАД' для возврата: ")
+                if link_choice.lower() == 'назад':
                     continue
 
                 try:
